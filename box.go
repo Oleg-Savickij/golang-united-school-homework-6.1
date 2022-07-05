@@ -111,11 +111,10 @@ func (b *box) RemoveAllCircles() error {
 		case Circle:
 			b.shapes = append(b.shapes[:i], b.shapes[i+1:]...)
 			isAnyCircle = true
-		default:
 		}
 	}
 
-	if isAnyCircle {
+	if !isAnyCircle {
 		return errors.New("no circles in box")
 	}
 
