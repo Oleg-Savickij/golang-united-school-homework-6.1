@@ -4,6 +4,9 @@ import (
 	"errors"
 )
 
+var errOutForMaxRange = errors.New("index out of max range")
+var errNoShape = errors.New("no shape by this index")
+
 // box contains list of shapes and able to perform operations on them
 type box struct {
 	shapes         []Shape
@@ -32,11 +35,11 @@ func (b *box) AddShape(shape Shape) error {
 // whether shape by index doesn't exist or index went out of the range, then it returns an error
 func (b *box) GetByIndex(i int) (Shape, error) {
 	if i < 0 || i > b.shapesCapacity {
-		return nil, errors.New("index out of max range")
+		return nil, errOutForMaxRange
 	}
 
-	if len(b.shapes) < i {
-		return nil, errors.New("index out of current range")
+	if b.shapes[i] == nil {
+		return nil, errNoShape
 	}
 
 	return b.shapes[i], nil
@@ -46,15 +49,15 @@ func (b *box) GetByIndex(i int) (Shape, error) {
 // whether shape by index doesn't exist or index went out of the range, then it returns an error
 func (b *box) ExtractByIndex(i int) (Shape, error) {
 	if i < 0 || i > b.shapesCapacity {
-		return nil, errors.New("index out of max range")
+		return nil, errOutForMaxRange
 	}
 
-	if len(b.shapes) < i {
-		return nil, errors.New("index out of current range")
+	if b.shapes[i] == nil {
+		return nil, errNoShape
 	}
 
 	var shape = b.shapes[i]
-	b.shapes = append(b.shapes[:i], b.shapes[i+1:]...)
+	b.shapes[i] = nil
 
 	return shape, nil
 }
@@ -106,7 +109,7 @@ func (b *box) RemoveAllCircles() error {
 	for i := 0; i < len(b.shapes); i++ {
 		switch b.shapes[i].(type) {
 		case Circle:
-			b.shapes = append(b.shapes[:i], b.shapes[i+1:]...)
+			b.shapes[i] = nil
 			isAnyCircle = true
 		}
 	}
