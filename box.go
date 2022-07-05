@@ -107,12 +107,9 @@ func (b *box) SumArea() float64 {
 func (b *box) RemoveAllCircles() error {
 	var isAnyCircle = false
 	for i := 0; i < len(b.shapes); i++ {
-		switch b.shapes[i].(type) {
-		case Circle:
-			{
-				b.shapes = append(b.shapes[:i], b.shapes[i+1:]...)
-				isAnyCircle = true
-			}
+		if isCircleType(b.shapes[i]) {
+			b.shapes = append(b.shapes[:i], b.shapes[i+1:]...)
+			isAnyCircle = true
 		}
 	}
 
@@ -121,4 +118,13 @@ func (b *box) RemoveAllCircles() error {
 	}
 
 	return nil
+}
+
+func isCircleType(s Shape) bool {
+	switch s.(type) {
+	case Circle:
+		return true
+	default:
+		return false
+	}
 }
