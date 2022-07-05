@@ -57,7 +57,7 @@ func (b *box) ExtractByIndex(i int) (Shape, error) {
 	}
 
 	var shape = b.shapes[i]
-	b.shapes[i] = nil
+	b.shapes = append(b.shapes[:i], b.shapes[i+1:]...)
 
 	return shape, nil
 }
@@ -105,12 +105,13 @@ func (b *box) SumArea() float64 {
 // RemoveAllCircles removes all circles in the list
 // whether circles are not exist in the list, then returns an error
 func (b *box) RemoveAllCircles() error {
-	var isAnyCircle bool = false
+	var isAnyCircle = false
 	for i := 0; i < len(b.shapes); i++ {
 		switch b.shapes[i].(type) {
 		case Circle:
-			b.shapes[i] = nil
+			b.shapes = append(b.shapes[:i], b.shapes[i+1:]...)
 			isAnyCircle = true
+		default:
 		}
 	}
 
